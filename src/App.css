@@ -4,6 +4,10 @@
   text-align: center;
 }
 
+header {
+  padding-bottom: 1em;
+}
+
 .table--showColors tr:nth-child(2n) {
   background-color: #333;
 }

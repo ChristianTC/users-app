@@ -3,10 +3,16 @@ import axios from "axios"
 import './App.css'
 import { useState, useEffect } from 'react';
 import { IUser } from "./interfaces/interfaces";
+import UserList from "./components/UserList";
 
 const App = () => {
 
   const [users, setUsers] = useState<IUser[]>([])
+  const [showColor, setShowColor] = useState(false)
+
+  const toggleColor = () => (
+    setShowColor(prevState => !prevState)
+  )
 
   useEffect(() => {
     axios.get('https://randomuser.me/api/?results=100')
@@ -19,34 +25,12 @@ const App = () => {
     <div className="app">
       <h2>USERS APP</h2>
 
-      <table width={'100%'}>
-        <thead>
-          <tr>
-            <th>Photo</th>
-            <th>Firstname</th>
-            <th>Lastname</th>
-            <th>Country</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            users.map(user => (
-              <tr>
-                <td>
-                  <img src={user.picture.thumbnail} alt="" />
-                </td>
-                <td>{user.name.first}</td>
-                <td>{user.name.last}</td>
-                <td>{user.location.country}</td>
-                <td>
-                  <button>Delete</button>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
+      <header>
+        <button onClick={toggleColor}>Color the rows</button>
+      </header>
+      <main>
+        <UserList users={users} showColor={showColor}/>
+      </main>
 
     </div>
   )
