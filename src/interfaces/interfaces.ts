@@ -4,6 +4,13 @@ declare global {
   }
 }
 
+export enum SortBy {
+  NONE= 'none',
+  FIRST = 'first',
+  LAST = 'last',
+  COUNTRY = 'country',
+}
+
 export interface IUsersAPI {
   results: IUser[];
   info:    Info;

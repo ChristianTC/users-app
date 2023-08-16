@@ -2,14 +2,14 @@ import axios from "axios"
 
 import './App.css'
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { IUser } from "./interfaces/interfaces";
+import { IUser, SortBy } from "./interfaces/interfaces";
 import UserList from "./components/UserList";
 
 const App = () => {
 
   const [users, setUsers] = useState<IUser[]>([])
   const [showColor, setShowColor] = useState(false)
-  const [sortedByCountry, setSortedByCountry] = useState(false)
+  const [sortedBy, setSortedBy] = useState<SortBy>(SortBy.NONE)
   const [filterCountry, setFilterCountry] = useState<string | null>(null)
 
   const initialUsers = useRef<IUser[]>([])
@@ -19,7 +19,8 @@ const App = () => {
   )
 
   const toggleSortByCountry = () => {
-    setSortedByCountry(prevstate => !prevstate)
+    const valueSort = sortedBy === SortBy.NONE ? SortBy.COUNTRY : SortBy.NONE
+    setSortedBy(valueSort)
   }
 
   const handleDelete = (email:string) => {
@@ -28,6 +29,10 @@ const App = () => {
 
   const handleReset = () => {
     setUsers(initialUsers.current)
+  }
+
+  const handleChangeSort = (sort: SortBy) => {
+    setSortedBy(sort)
   }
 
   useEffect(() => {
@@ -41,12 +46,19 @@ const App = () => {
 
   const sortedUsers:IUser[] = useMemo(() => {
     console.log('SORTED');
-    return sortedByCountry 
+    return sortedBy !== SortBy.NONE
       ? users.toSorted((userA: IUser, userB: IUser) => {
-        return userA.location.country.localeCompare(userB.location.country)
+          switch (sortedBy) {
+            case SortBy.COUNTRY:
+              return userA.location.country.localeCompare(userB.location.country)
+            case SortBy.FIRST:
+              return userA.name.first.localeCompare(userB.name.first)
+            case SortBy.LAST:
+              return userA.name.last.localeCompare(userB.name.last)
+        }
       })
       : users
-  }, [users, sortedByCountry])
+  }, [users, sortedBy])
 
   const filteredUsers:IUser[] = useMemo(() => {
     console.log('FILTER');
@@ -68,7 +80,7 @@ const App = () => {
         }} />
       </header>
       <main>
-        <UserList users={filteredUsers} showColor={showColor} handleDelete={handleDelete}/>
+        <UserList users={filteredUsers} showColor={showColor} handleDelete={handleDelete} handleChangeSort={handleChangeSort}/>
       </main>
 
     </div>

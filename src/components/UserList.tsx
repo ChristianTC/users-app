@@ -1,20 +1,21 @@
-import { IUser } from "../interfaces/interfaces"
+import { IUser, SortBy } from "../interfaces/interfaces"
 
 interface IProps {
   users: IUser[],
   showColor: boolean,
   handleDelete: (email:string) => void,
+  handleChangeSort: (sort:SortBy) => void
 }
 
-const UserList = ({users, showColor, handleDelete}:IProps) => {
+const UserList = ({users, showColor, handleDelete, handleChangeSort}:IProps) => {
   return (
     <table width={'100%'}>
         <thead>
           <tr>
             <th>Photo</th>
-            <th>Firstname</th>
-            <th>Lastname</th>
-            <th>Country</th>
+            <th style={{cursor: 'pointer'}} onClick={()=>handleChangeSort(SortBy.FIRST)}>Firstname</th>
+            <th style={{cursor: 'pointer'}} onClick={()=>handleChangeSort(SortBy.LAST)}>Lastname</th>
+            <th style={{cursor: 'pointer'}} onClick={()=>handleChangeSort(SortBy.COUNTRY)}>Country</th>
             <th>Actions</th>
           </tr>
         </thead>
