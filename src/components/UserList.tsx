@@ -2,10 +2,11 @@ import { IUser } from "../interfaces/interfaces"
 
 interface IProps {
   users: IUser[],
-  showColor: boolean
+  showColor: boolean,
+  handleDelete: (email:string) => void,
 }
 
-const UserList = ({users, showColor}:IProps) => {
+const UserList = ({users, showColor, handleDelete}:IProps) => {
   return (
     <table width={'100%'}>
         <thead>
@@ -28,7 +29,7 @@ const UserList = ({users, showColor}:IProps) => {
                 <td>{user.name.last}</td>
                 <td>{user.location.country}</td>
                 <td>
-                  <button>Delete</button>
+                  <button onClick={()=>handleDelete(user.email)}>Delete</button>
                 </td>
               </tr>
             ))
