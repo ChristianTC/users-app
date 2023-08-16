@@ -9,8 +9,9 @@ const App = () => {
 
   const [users, setUsers] = useState<IUser[]>([])
   const [showColor, setShowColor] = useState(false)
-  const [filterCountry, setFilterCountry] = useState(false)
-  
+  const [sortedByCountry, setSortedByCountry] = useState(false)
+  const [filterCountry, setFilterCountry] = useState<string | null>(null)
+
   const initialUsers = useRef<IUser[]>([])
 
   const toggleColor = () => (
@@ -18,7 +19,7 @@ const App = () => {
   )
 
   const toggleSortByCountry = () => {
-    setFilterCountry(prevstate => !prevstate)
+    setSortedByCountry(prevstate => !prevstate)
   }
 
   const handleDelete = (email:string) => {
@@ -38,11 +39,15 @@ const App = () => {
       .catch(err => console.error(err))
   }, [])
   
-  const sortedUsers:IUser[] = filterCountry 
-    ? users.toSorted((userA: IUser, userB: IUser) => {
+  const filteredUsers:IUser[] = filterCountry && filterCountry.length>0 
+    ? users.filter(user=>user.location.country.toLowerCase().includes(filterCountry.toLowerCase()))
+    : users
+
+  const sortedUsers:IUser[] = sortedByCountry 
+    ? filteredUsers.toSorted((userA: IUser, userB: IUser) => {
       return userA.location.country.localeCompare(userB.location.country)
     })
-    : users
+    : filteredUsers
 
   return (
     <div className="app">
@@ -52,6 +57,9 @@ const App = () => {
         <button onClick={toggleColor}>Color the rows</button>
         <button onClick={()=>toggleSortByCountry()}>Sort by country</button>
         <button onClick={handleReset}>Reset state</button>
+        <input type="text" placeholder="filter by country" onChange={(e) => {
+          setFilterCountry(e.target.value)
+        }} />
       </header>
       <main>
         <UserList users={sortedUsers} showColor={showColor} handleDelete={handleDelete}/>
