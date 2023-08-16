@@ -1,7 +1,7 @@
 import axios from "axios"
 
 import './App.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { IUser } from "./interfaces/interfaces";
 import UserList from "./components/UserList";
 
@@ -11,6 +11,7 @@ const App = () => {
   const [showColor, setShowColor] = useState(false)
   const [filterCountry, setFilterCountry] = useState(false)
   
+  const initialUsers = useRef<IUser[]>([])
 
   const toggleColor = () => (
     setShowColor(prevState => !prevState)
@@ -24,9 +25,16 @@ const App = () => {
     setUsers(users.filter((user)=>user.email!==email))
   }
 
+  const handleReset = () => {
+    setUsers(initialUsers.current)
+  }
+
   useEffect(() => {
     axios.get('https://randomuser.me/api/?results=100')
-      .then(response => setUsers(response.data.results))
+      .then(response => {
+        setUsers(response.data.results)
+        initialUsers.current = response.data.results
+      })
       .catch(err => console.error(err))
   }, [])
   
@@ -43,6 +51,7 @@ const App = () => {
       <header>
         <button onClick={toggleColor}>Color the rows</button>
         <button onClick={()=>toggleSortByCountry()}>Sort by country</button>
+        <button onClick={handleReset}>Reset state</button>
       </header>
       <main>
         <UserList users={sortedUsers} showColor={showColor} handleDelete={handleDelete}/>
