@@ -17,8 +17,37 @@ const App = () => {
 
   return (
     <div className="app">
-      <h1>USERS APP</h1>
-      { JSON.stringify(users) }
+      <h2>USERS APP</h2>
+
+      <table width={'100%'}>
+        <thead>
+          <tr>
+            <th>Photo</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Country</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            users.map(user => (
+              <tr>
+                <td>
+                  <img src={user.picture.thumbnail} alt="" />
+                </td>
+                <td>{user.name.first}</td>
+                <td>{user.name.last}</td>
+                <td>{user.location.country}</td>
+                <td>
+                  <button>Delete</button>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+
     </div>
   )
 }
